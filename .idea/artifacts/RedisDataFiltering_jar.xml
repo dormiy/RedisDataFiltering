@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RedisDataFiltering:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RedisDataFiltering_jar</output-path>
+    <root id="archive" name="RedisDataFiltering.jar">
+      <element id="module-output" name="RedisDataFiltering" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/opencsv-3.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/HdrHistogram-2.1.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/LatencyUtils-2.0.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/commons-pool2-2.4.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/lettuce-core-5.0.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/reactor-core-3.1.0.M1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/reactive-streams-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-codec-4.1.9.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-buffer-4.1.9.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-common-4.1.9.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-handler-4.1.9.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-resolver-4.1.9.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-transport-4.1.9.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-tcnative-1.1.33.Fork26-osx-x86_64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependencies/netty-transport-native-epoll-4.1.9.Final-linux-x86_64.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
