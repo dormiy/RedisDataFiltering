@@ -1,14 +1,10 @@
 package com.testdash;
 
-import impl.org.controlsfx.skin.CheckComboBoxSkin;
+
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
+
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,25 +12,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Skin;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
-
-import org.controlsfx.ControlsFXSample;
 import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.control.IndexedCheckModel;
-import org.controlsfx.samples.Utils;
 
-/**
- * Created by wuping on 6/26/2017.
- */
 public class test extends Application{
 
     static RedisHandling redis;
@@ -46,16 +30,11 @@ public class test extends Application{
 
         int comboWidth = 150;
 
-
-
-
-
         //define the content;
         Label factoryLabel = new Label("Factory");
         //ComboBox factoryComboBox = new ComboBox();
         final CheckComboBox<String> factoryComboBox = new CheckComboBox<String>();
         //factoryComboBox.setPrefWidth (comboWidth);
-
 
         Label customerLabel = new Label("Customer");
         final CheckComboBox<String> customerComboBox = new CheckComboBox<String>();
@@ -108,7 +87,6 @@ public class test extends Application{
         Button btn=new Button("Submit");
 
 
-
         //add the contents into the grid pan
         GridPane grid = new GridPane();
         grid.setAlignment (Pos.CENTER);
@@ -116,7 +94,6 @@ public class test extends Application{
         grid.setHgap (40);
         grid.setVgap (5);
         grid.setPadding (new Insets (30,0,0,0));
-
 
         grid.add(factoryLabel,0,0);
         grid.add(factoryComboBox,1,0);
@@ -169,7 +146,6 @@ public class test extends Application{
             }
         });
 
-
         factoryComboBox.setOnMouseEntered (new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent event) {
@@ -182,7 +158,7 @@ public class test extends Application{
                 //System.out.println(factoryComboBox.getSelectionModel().getSelectedItem());
             }
         });
-        
+
         factoryComboBox.getCheckModel().getCheckedItems().addListener (new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
                 System.out.println(factoryComboBox.getCheckModel().getCheckedItems());
@@ -190,41 +166,8 @@ public class test extends Application{
         });
 
 
-
-
-
-       /*factoryComboBox.setOnShowing((e) -> {
-           factoryComboBox.getItems().removeAll();
-           factoryComboBox.getItems().clear();
-
-           ArrayList result;
-           if(initialIndicator) {
-               result = optionFilteringService.getMenu ("Factory", initialIndicator);
-               for (int i = 0; i < result.size (); i++) {
-                   factoryComboBox.getItems ().add (result.get (i));
-               }
-               initialIndicator = false;
-           }
-
-           else {
-               result = optionFilteringService.getMenu("Factory",initialIndicator);
-               for (int i = 0; i < result.size(); i++) {
-                   factoryComboBox.getItems().add(result.get(i));
-               }
-           }
-           //System.out.println(factoryComboBox.getSelectionModel().getSelectedItem());
-       });
-
-*/
-
-
-
-
         //put the grid pan into a Vbox
         VBox root = new VBox();
-
-
-
 
         root.getChildren().add(grid);
         Scene scene = new Scene(root, 400, 500);
