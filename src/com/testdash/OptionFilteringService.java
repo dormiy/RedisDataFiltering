@@ -10,7 +10,7 @@ public class OptionFilteringService {
     private static int userKey;
     //private static ArrayList optionInput = new ArrayList ();
     private static RedisHandling redis;
-    private String[] list = {"Factory", "Customer","Product","Package","Device","Partno","Stage","Operation","Testcode","TestProgram","ProgramRevision","CamType","Platform"};
+    private String[] list = {"Factory", "Customer","Product","Package","Device","Partno","Stage","MFGStep","TestCode","TestProgram","ProgramRevision","LotType","Platform"};
     private boolean[] listOn ={false,false,false,false,false,false,false,false,false,false,false,false,false};
 
     public void userCreation() {
@@ -40,11 +40,14 @@ public class OptionFilteringService {
         if (listOnInter ()==false) {
             for (String x : redis.commands.smembers ("option" + ":" + nameMenu)) {
                 //System.out.println("first time look for:" +x);
+//                System.out.println("smembers from: " + "option" + ":" + nameMenu);
+//                System.out.println("available choice are:" + x);
                 optionInput.add (x);
             }
             // initialIndicator=false;
         } else {
             for (String s : redis.commands.smembers ("option" + ":" + nameMenu)) {
+
                 Long sinterResult = redis.commands.sinterstore (selectSetTemp, currentSelection, "ATE" + ":" + nameMenu + ":" + s);
                 if (sinterResult != 0) {
                     optionInput.add (s);
@@ -114,7 +117,7 @@ public class OptionFilteringService {
                     redis.commands.sinterstore (currentSelection, currentSelection, nextLocation);
                     firstTime = false;
                 } else {
-                    nextLocation = currentSelection + ":" + list[i];
+                    nextLocation = "user" + Integer.toString (userKey)+ ":" + list[i];
                     redis.commands.sinterstore (currentSelection, currentSelection, nextLocation);
                 }
             }
