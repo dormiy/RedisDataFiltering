@@ -7,74 +7,79 @@ import java.util.Random;
 public class OptionFilteringService {
 
 
-    static int userKey;
-    static ArrayList optionInput = new ArrayList();
-    static RedisHandling redis;
+    private static int userKey;
+    //private static ArrayList optionInput = new ArrayList ();
+    private static RedisHandling redis;
+    private String[] list = {"Factory", "Customer","Product","Package","Device","Partno","Stage","Operation","Testcode","TestProgram","ProgramRevision","CamType","Platform"};
+    private boolean[] listOn ={false,false,false,false,false,false,false,false,false,false,false,false,false};
 
+    public void userCreation() {
+        Random rand = new Random ();
+        userKey = rand.nextInt (999999);
+        System.out.println ("user:" + userKey + " was created!");
+    }
 
-    public void userCreation(){
-        Random rand = new Random();
-        userKey = rand.nextInt(999999);
-        System.out.println("user:"+userKey+" was created!");
+    public void userDel() {
+        redis.commands.del ("user" + Integer.toString (userKey) + ":Factory");
+        redis.commands.del ("user" + Integer.toString (userKey)+":selection");
+        System.out.println ("user:" + userKey + " was deleted!");
     }
 
 
-    public ArrayList getMenu(String nameMenu, boolean initialIndicator) {
-        optionInput.clear();
-        String selectSet = "user" + Integer.toString(userKey);
-        String selectSetTemp = "user" + Integer.toString(userKey) + "-temp";
-        redis.commands.del(selectSetTemp);
+    public ArrayList getMenu(int index) {
+        String nameMenu=list[index];
 
+        ArrayList optionInput = new ArrayList ();
+        //optionInput.clear ();
+        String currentSelection = "user" + Integer.toString (userKey)+":selection";
+        //String selectSet = "user" + Integer.toString (userKey);
 
-        if (initialIndicator) {
-            int count = 0;
-            for (String x : redis.commands.smembers("option" + ":" + nameMenu)) {
-                optionInput.add(x);
+        String selectSetTemp = "user" + Integer.toString (userKey) + "-temp";
+        //redis.commands.del (selectSetTemp);
+
+        if (listOnInter ()==false) {
+            for (String x : redis.commands.smembers ("option" + ":" + nameMenu)) {
+                //System.out.println("first time look for:" +x);
+                optionInput.add (x);
             }
             // initialIndicator=false;
         } else {
-            for (String s : redis.commands.smembers("option" + ":" + nameMenu)) {
-                Long sinterResult = redis.commands.sinterstore(selectSetTemp, selectSet, "ATE" + ":" + nameMenu + ":" + s);
+            for (String s : redis.commands.smembers ("option" + ":" + nameMenu)) {
+                Long sinterResult = redis.commands.sinterstore (selectSetTemp, currentSelection, "ATE" + ":" + nameMenu + ":" + s);
                 if (sinterResult != 0) {
-                    optionInput.add(s);
+                    optionInput.add (s);
                 }
             }
+            redis.commands.del (selectSetTemp);
         }
-        /*for (int i = 0; i < secondKeyIn.size(); i++) {
-            System.out.println(i + ":" + secondKeyIn.get(i));
-        }*/
-
-
-
         return optionInput;
-
-
     }
 
-    public void selecionHandle(String nameMenu, ArrayList<String> result, boolean initialIndicator){
-        String selectSet = "user-"+Integer.toString(userKey);
-        String selectSetTemp = "user-"+Integer.toString(userKey)+"-temp";
-        String selectSetColumn="user-"+Integer.toString(userKey)+nameMenu;
-        redis.commands.del(selectSetTemp);
+    public void selecionHandle(int i, String string) {
+        ArrayList<String> result = new ArrayList<> ();
+        result = resultBuild (string);
+        String selectSetColumn = "user" + Integer.toString (userKey) + ":" + list[i];
 
-        //store second menu result into an temp union
-        for(int i=0; i<result.size ();i++){
-            String s ="ATE:"+nameMenu+":"+result.get(i);
-            redis.commands.sunionstore(selectSetTemp, selectSetTemp,s);
-            redis.commands.sunionstore(selectSetColumn, selectSetColumn,s);
-        }
+        redis.commands.del (selectSetColumn);
+        listOn[i]=true;
 
-        //initiate the user selection union when 1st time running
-        //for 2nd onwards running, sinter the current selection with available union;
-        if(initialIndicator){
-            redis.commands.sunionstore(selectSet,selectSetTemp);
-            initialIndicator=false;
-        }
-        else{
-            redis.commands.sinterstore(selectSet,selectSet,selectSetTemp);
+        for (String s : result) {
+            String s1 = "ATE:" + list[i] + ":" + s;
+            //System.out.println ("selection is: " + s);
+
+            if (s.equals ("SelectNone")) {
+                redis.commands.del (s1);
+                listOn[i]=false;
+            }
+            else {
+                redis.commands.sunionstore (selectSetColumn, selectSetColumn, s1);
+                listOn[i]=true;
+                //System.out.println ("abc was set to true");
+
+            }
+            //System.out.println ("select handler result: " + listOn[i]);
         }
     }
-
 
     public ArrayList resultBuild(String result) {
         ArrayList<String> string = new ArrayList ();
@@ -83,13 +88,51 @@ public class OptionFilteringService {
         for (int j = 0; j < result.length (); j++) {
             if (result.charAt (j) == 32 || result.charAt (j) == 91) {
             } else if (result.charAt (j) == 44 || result.charAt (j) == 93) {
-                string.add (s.toString ());
-                s.setLength (0);
+                if (s.toString ().equals ("null")) {
+                } else {
+                    string.add (s.toString ());
+                    s.setLength (0);
+                }
             } else
                 s.append (Character.toString (result.charAt (j)));
         }
         return string;
     }
+
+    public void resultInter(int index) {
+        String currentSelection = "user" + Integer.toString (userKey)+":selection";
+
+        boolean firstTime = true;
+        String nextLocation;
+        redis.commands.del (currentSelection);
+
+        for (int i = 0; i < list.length; i++) {
+            if (listOn[i] == true) {
+                if (firstTime) {
+                    nextLocation = "user" + Integer.toString (userKey)+ ":" + list[i];
+                    redis.commands.sunionstore (currentSelection, currentSelection, nextLocation);
+                    redis.commands.sinterstore (currentSelection, currentSelection, nextLocation);
+                    firstTime = false;
+                } else {
+                    nextLocation = currentSelection + ":" + list[i];
+                    redis.commands.sinterstore (currentSelection, currentSelection, nextLocation);
+                }
+            }
+        }
+    }
+
+    public boolean listOnInter(){
+        boolean result = false;
+        for(int i=0;i< listOn.length;i++){
+            if(listOn[i]==true)
+                result=true;
+
+        }
+        System.out.println("ListOn Intersection result is: " + result);
+
+        return  result;
+    }
+
 
 
 }
