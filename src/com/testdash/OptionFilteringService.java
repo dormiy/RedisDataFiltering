@@ -23,6 +23,7 @@ public class OptionFilteringService {
         redis.commands.del ("user" + Integer.toString (userKey) + ":Factory");
         redis.commands.del ("user" + Integer.toString (userKey)+":selection");
         System.out.println ("user:" + userKey + " was deleted!");
+        
     }
 
 
