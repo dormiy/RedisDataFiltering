@@ -3,11 +3,11 @@ package com.testdash;
 
 import javafx.application.Application;
 import javafx.collections.ListChangeListener;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -21,8 +21,6 @@ public class test extends Application {
 
     private static RedisHandling redis;
     private static OptionFilteringService optionFilteringService;
-    private static boolean initialIndicator = true;
-
 
 
     @Override
@@ -46,44 +44,54 @@ public class test extends Application {
         productComboBox.setPrefWidth (comboWidth);
 
         Label packageLabel = new Label ("Package");
-        ComboBox packageComboBox = new ComboBox ();
+        //ComboBox packageComboBox = new ComboBox ();
+        final CheckComboBox<String> packageComboBox = new CheckComboBox<> ();
         packageComboBox.setPrefWidth (comboWidth);
 
         Label deviceLabel = new Label ("Device");
-        ComboBox deviceComboBox = new ComboBox ();
+        //ComboBox deviceComboBox = new ComboBox ();
+        final CheckComboBox<String> deviceComboBox = new CheckComboBox<> ();
         deviceComboBox.setPrefWidth (comboWidth);
 
-        Label partnoLabel = new Label ("Partno");
-        ComboBox partnoComboBox = new ComboBox ();
-        partnoComboBox.setPrefWidth (comboWidth);
+/*        Label partnoLabel = new Label ("Partno");
+        //ComboBox partnoComboBox = new ComboBox ();
+        final CheckComboBox<String> partnoComboBox = new CheckComboBox<> ();
+        partnoComboBox.setPrefWidth (comboWidth);*/
 
         Label stageLabel = new Label ("Stage");
-        ComboBox stageComboBox = new ComboBox ();
+        //ComboBox stageComboBox = new ComboBox ();
+        final CheckComboBox<String> stageComboBox = new CheckComboBox<> ();
         stageComboBox.setPrefWidth (comboWidth);
 
         Label operationLabel = new Label ("Operation");
-        ComboBox operationComboBox = new ComboBox ();
+        //ComboBox operationComboBox = new ComboBox ();
+        final CheckComboBox<String> operationComboBox = new CheckComboBox<> ();
         operationComboBox.setPrefWidth (comboWidth);
 
         Label testCodeLabel = new Label ("Testcode");
-        ComboBox testCodeComboBox = new ComboBox ();
+        //ComboBox testCodeComboBox = new ComboBox ();
+        final CheckComboBox<String> testCodeComboBox = new CheckComboBox<> ();
         testCodeComboBox.setPrefWidth (comboWidth);
 
         Label testProgramLabel = new Label ("TestProgram");
-        ComboBox testProgramComboBox = new ComboBox ();
+        //ComboBox testProgramComboBox = new ComboBox ();
+        final CheckComboBox<String> testProgramComboBox = new CheckComboBox<> ();
         testProgramComboBox.setPrefWidth (comboWidth);
 
         Label programRevisionLabel = new Label ("ProgramRevision");
-        ComboBox programRevisionComboBox = new ComboBox ();
+        //ComboBox programRevisionComboBox = new ComboBox ();
+        final CheckComboBox<String> programRevisionComboBox = new CheckComboBox<> ();
         programRevisionComboBox.setPrefWidth (comboWidth);
 
         Label camTypeLabel = new Label ("CamType");
-        ComboBox camTypeComboBox = new ComboBox ();
+        //ComboBox camTypeComboBox = new ComboBox ();
+        final CheckComboBox<String> camTypeComboBox = new CheckComboBox<> ();
         camTypeComboBox.setPrefWidth (comboWidth);
 
-        Label platformLabel = new Label ("Platform");
-        ComboBox platformComboBox = new ComboBox ();
-        platformComboBox.setPrefWidth (comboWidth);
+/*        Label platformLabel = new Label ("Platform");
+        //ComboBox platformComboBox = new ComboBox ();
+        final CheckComboBox<String> platformComboBox = new CheckComboBox<> ();
+        platformComboBox.setPrefWidth (comboWidth);*/
 
         Button btn = new Button ("Submit");
 
@@ -112,8 +120,8 @@ public class test extends Application {
         grid.add (deviceLabel, 0, 4);
         grid.add (deviceComboBox, 1, 4);
 
-        grid.add (partnoLabel, 0, 5);
-        grid.add (partnoComboBox, 1, 5);
+/*        grid.add (partnoLabel, 0, 5);
+        grid.add (partnoComboBox, 1, 5);*/
 
         grid.add (stageLabel, 0, 6);
         grid.add (stageComboBox, 1, 6);
@@ -133,8 +141,8 @@ public class test extends Application {
         grid.add (camTypeLabel, 0, 11);
         grid.add (camTypeComboBox, 1, 11);
 
-        grid.add (platformLabel, 0, 12);
-        grid.add (platformComboBox, 1, 12);
+/*        grid.add (platformLabel, 0, 12);
+        grid.add (platformComboBox, 1, 12);*/
 
 
         grid.add (btn, 1, 13);
@@ -142,16 +150,16 @@ public class test extends Application {
 
         btn.setOnAction (event -> System.out.println ("Bang"));
 
-        ArrayList<Integer> factoryArray = new ArrayList<> ();
+
+
 
         factoryComboBox.setOnMouseEntered (event -> {
-            ArrayList result;
+            ArrayList<String> result;
             factoryComboBox.getItems ().remove (0,factoryComboBox.getItems ().size ());
             factoryComboBox.getItems ().add("Select None");
-
             result = optionFilteringService.getMenu (0);
-            for (int i = 0; i < result.size (); i++) {
-                factoryComboBox.getItems ().add (result.get (i).toString ());
+            for(String x:result){
+                factoryComboBox.getItems ().add(x);
             }
         });
 
@@ -164,13 +172,12 @@ public class test extends Application {
 
 
         customerComboBox.setOnMouseEntered (event -> {
-            ArrayList result;
+            ArrayList<String> result;
             customerComboBox.getItems ().remove (0,customerComboBox.getItems ().size ());
             customerComboBox.getItems ().add("Select None");
-
             result = optionFilteringService.getMenu (1);
-            for (int i = 0; i < result.size (); i++) {
-                customerComboBox.getItems ().add (result.get (i).toString ());
+            for(String x:result){
+                customerComboBox.getItems ().add(x);
             }
         });
 
@@ -181,15 +188,13 @@ public class test extends Application {
             optionFilteringService.resultInter (1);
         });
 
-
         productComboBox.setOnMouseEntered (event -> {
-            ArrayList result;
+            ArrayList<String> result;
             productComboBox.getItems ().remove (0,productComboBox.getItems ().size ());
             productComboBox.getItems ().add("Select None");
-
             result = optionFilteringService.getMenu (2);
-            for (int i = 0; i < result.size (); i++) {
-                customerComboBox.getItems ().add (result.get (i).toString ());
+            for(String x:result){
+                productComboBox.getItems ().add(x);
             }
         });
 
@@ -199,6 +204,177 @@ public class test extends Application {
             optionFilteringService.selecionHandle (2, selectResult);
             optionFilteringService.resultInter (2);
         });
+
+        packageComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            packageComboBox.getItems ().remove (0,packageComboBox.getItems ().size ());
+            packageComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (3);
+            for(String x:result){
+                packageComboBox.getItems ().add(x);
+            }
+        });
+
+        packageComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = packageComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(packageComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (3, selectResult);
+            optionFilteringService.resultInter (3);
+        });
+
+
+        deviceComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            deviceComboBox.getItems ().remove (0,deviceComboBox.getItems ().size ());
+            deviceComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (4);
+            for(String x:result){
+                deviceComboBox.getItems ().add(x);
+            }
+        });
+
+        deviceComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = deviceComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(deviceComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (4, selectResult);
+            optionFilteringService.resultInter (4);
+        });
+
+        /*partnoComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            partnoComboBox.getItems ().remove (0,partnoComboBox.getItems ().size ());
+            partnoComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (5);
+            for(String x:result){
+                partnoComboBox.getItems ().add(x);
+            }
+        });
+
+        partnoComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = partnoComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(partnoComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (5, selectResult);
+            optionFilteringService.resultInter (5);
+        });
+*/
+        stageComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            stageComboBox.getItems ().remove (0,stageComboBox.getItems ().size ());
+            stageComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (6);
+            for(String x:result){
+                stageComboBox.getItems ().add(x);
+            }
+        });
+
+        stageComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = stageComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(stageComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (6, selectResult);
+            optionFilteringService.resultInter (6);
+        });
+
+        operationComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            operationComboBox.getItems ().remove (0,operationComboBox.getItems ().size ());
+            operationComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (7);
+            for(String x:result){
+                operationComboBox.getItems ().add(x);
+            }
+        });
+
+        operationComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = operationComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(operationComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (7, selectResult);
+            optionFilteringService.resultInter (7);
+        });
+
+        testCodeComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            testCodeComboBox.getItems ().remove (0,testCodeComboBox.getItems ().size ());
+            testCodeComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (8);
+            for(String x:result){
+                testCodeComboBox.getItems ().add(x);
+            }
+        });
+
+        testCodeComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = testCodeComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(testCodeComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (8, selectResult);
+            optionFilteringService.resultInter (8);
+        });
+
+        testProgramComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            testProgramComboBox.getItems ().remove (0,testProgramComboBox.getItems ().size ());
+            testProgramComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (9);
+            for(String x:result){
+                testProgramComboBox.getItems ().add(x);
+            }
+        });
+
+        testProgramComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = testProgramComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(testProgramComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (9, selectResult);
+            optionFilteringService.resultInter (9);
+        });
+
+        programRevisionComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            programRevisionComboBox.getItems ().remove (0,programRevisionComboBox.getItems ().size ());
+            programRevisionComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (10);
+            for(String x:result){
+                programRevisionComboBox.getItems ().add(x);
+            }
+        });
+
+        programRevisionComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = programRevisionComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(programRevisionComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (10, selectResult);
+            optionFilteringService.resultInter (10);
+        });
+
+        camTypeComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            camTypeComboBox.getItems ().remove (0,camTypeComboBox.getItems ().size ());
+            camTypeComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (11);
+            for(String x:result){
+                camTypeComboBox.getItems ().add(x);
+            }
+        });
+
+        camTypeComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = camTypeComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(camTypeComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (11, selectResult);
+            optionFilteringService.resultInter (11);
+        });
+
+/*        platformComboBox.setOnMouseEntered (event -> {
+            ArrayList<String> result;
+            platformComboBox.getItems ().remove (0,platformComboBox.getItems ().size ());
+            platformComboBox.getItems ().add("Select None");
+            result = optionFilteringService.getMenu (12);
+            for(String x:result){
+                platformComboBox.getItems ().add(x);
+            }
+        });
+
+        platformComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+            String selectResult = platformComboBox.getCheckModel ().getCheckedItems ().toString ();
+            System.out.println(platformComboBox.getCheckModel ().getCheckedIndices ());
+            optionFilteringService.selecionHandle (12, selectResult);
+            optionFilteringService.resultInter (12);
+        });*/
 
 
         //put the grid pan into a Vbox
