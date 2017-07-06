@@ -1,6 +1,9 @@
 package com.testdash;
 
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -12,6 +15,20 @@ public class OptionFilteringService {
     private static RedisHandling redis;
     private String[] list = {"Factory", "Customer","Product","Package","Device","Partno","Stage","MFGStep","TestCode","TestProgram","ProgramRevision","LotType","Platform"};
     private boolean[] listOn ={false,false,false,false,false,false,false,false,false,false,false,false,false};
+    private boolean[] selectNoneOn ={false,false,false,false,false,false,false,false,false,false,false,false,false};
+
+
+    public boolean getListOn (int i){
+        System.out.println("this list is: " + listOn[i]);
+        return listOn[i];
+    }
+
+    public boolean getSelectNoneOn (int i){
+        return selectNoneOn[i];
+
+    }
+
+
 
     public void userCreation() {
         Random rand = new Random ();
@@ -38,70 +55,47 @@ public class OptionFilteringService {
         String selectSetTemp = "user" + Integer.toString (userKey) + "-temp";
         //redis.commands.del (selectSetTemp);
 
-        if (listOnInter ()==false) {
-            for (String x : redis.commands.smembers ("option" + ":" + nameMenu)) {
-                //System.out.println("first time look for:" +x);
-//                System.out.println("smembers from: " + "option" + ":" + nameMenu);
-//                System.out.println("available choice are:" + x);
-                optionInput.add (x);
-            }
-            // initialIndicator=false;
-        } else {
+        if (listOnInter ()) {
             for (String s : redis.commands.smembers ("option" + ":" + nameMenu)) {
-
                 Long sinterResult = redis.commands.sinterstore (selectSetTemp, currentSelection, "ATE" + ":" + nameMenu + ":" + s);
                 if (sinterResult != 0) {
                     optionInput.add (s);
                 }
             }
             redis.commands.del (selectSetTemp);
+        } else {
+             for (String x : redis.commands.smembers ("option" + ":" + nameMenu)) {
+                optionInput.add (x);
+            }
         }
         return optionInput;
     }
 
-    public void selecionHandle(int i, String string) {
-        ArrayList<String> result = new ArrayList<> ();
-        result = resultBuild (string);
+    public void selectionHandle(int i, ObservableList<String> input) {
+
         String selectSetColumn = "user" + Integer.toString (userKey) + ":" + list[i];
 
         redis.commands.del (selectSetColumn);
-        listOn[i]=true;
+        //listOn[i]=true;
 
-        for (String s : result) {
+        for (String s : input) {
             String s1 = "ATE:" + list[i] + ":" + s;
-            //System.out.println ("selection is: " + s);
-
-            if (s.equals ("SelectNone")) {
-                redis.commands.del (s1);
+            if (s.equals ("Select None")) {
+                System.out.println("select none entered");
+                redis.commands.del (selectSetColumn);
                 listOn[i]=false;
+                selectNoneOn[i]=true;
             }
             else {
                 redis.commands.sunionstore (selectSetColumn, selectSetColumn, s1);
                 listOn[i]=true;
-                //System.out.println ("abc was set to true");
+                System.out.
 
+                selectNoneOn[i]=false;
             }
-            //System.out.println ("select handler result: " + listOn[i]);
         }
     }
 
-    public ArrayList resultBuild(String result) {
-        ArrayList<String> string = new ArrayList ();
-        StringBuilder s = new StringBuilder ();
-
-        for (int j = 0; j < result.length (); j++) {
-            if (result.charAt (j) == 32 || result.charAt (j) == 91) {
-            } else if (result.charAt (j) == 44 || result.charAt (j) == 93) {
-                if (s.toString ().equals ("null")) {
-                } else {
-                    string.add (s.toString ());
-                    s.setLength (0);
-                }
-            } else
-                s.append (Character.toString (result.charAt (j)));
-        }
-        return string;
-    }
 
     public void resultInter(int index) {
         String currentSelection = "user" + Integer.toString (userKey)+":selection";
@@ -128,12 +122,11 @@ public class OptionFilteringService {
     public boolean listOnInter(){
         boolean result = false;
         for(int i=0;i< listOn.length;i++){
-            if(listOn[i]==true)
-                result=true;
-
+            if(listOn[i]==true) {
+                result = true;
+            }
         }
         System.out.println("ListOn Intersection result is: " + result);
-
         return  result;
     }
 

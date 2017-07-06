@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="RedisDataFiltering:jar">
+  <artifact type="jar" build-on-make="true" name="RedisDataFiltering:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/RedisDataFiltering_jar</output-path>
     <root id="archive" name="RedisDataFiltering.jar">
       <element id="module-output" name="RedisDataFiltering" />

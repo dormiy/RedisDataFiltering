@@ -2,7 +2,9 @@ package com.testdash;
 
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.controlsfx.control.CheckComboBox;
 
@@ -21,7 +25,7 @@ public class test extends Application {
 
     private static RedisHandling redis;
     private static OptionFilteringService optionFilteringService;
-
+    boolean abc=false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -94,6 +98,8 @@ public class test extends Application {
         platformComboBox.setPrefWidth (comboWidth);*/
 
         Button btn = new Button ("Submit");
+        Button factoryBtn = new Button ("set");
+        Button customerBtn = new Button("set");
 
 
         //add the contents into the grid pan
@@ -106,10 +112,12 @@ public class test extends Application {
 
         grid.add (factoryLabel, 0, 0);
         grid.add (factoryComboBox, 1, 0);
-        //grid.add(factoryComboBox,1,0,20,10);
+        grid.add(factoryBtn,2,0);
+
 
         grid.add (customerLabel, 0, 1);
         grid.add (customerComboBox, 1, 1);
+        grid.add(customerBtn,2,0);
 
         grid.add (productLabel, 0, 2);
         grid.add (productComboBox, 1, 2);
@@ -147,29 +155,81 @@ public class test extends Application {
 
         grid.add (btn, 1, 13);
         btn.setAlignment (Pos.BOTTOM_RIGHT);
-
         btn.setOnAction (event -> System.out.println ("Bang"));
-
 
 
 
         factoryComboBox.setOnMouseEntered (event -> {
             ArrayList<String> result;
-            factoryComboBox.getItems ().remove (0,factoryComboBox.getItems ().size ());
-            factoryComboBox.getItems ().add("Select None");
-            result = optionFilteringService.getMenu (0);
+            result = optionFilteringService.getMenu (2);
+            factoryComboBox.getItems ().clear();
+            factoryComboBox.getCheckModel().clearChecks();
             for(String x:result){
-                factoryComboBox.getItems ().add(x);
+                if(x.isEmpty()){}
+                else {
+                    factoryComboBox.getItems().add(x);
+                    System.out.println("the available options are: " + x);
+                }
             }
+            if(optionFilteringService.getListOn(0)){
+                for(int i=0;i<result.size();i++)
+                factoryComboBox.getCheckModel().check(i);}
+
         });
 
         factoryComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
-            String selectResult = factoryComboBox.getCheckModel ().getCheckedItems ().toString ();
-            System.out.println(factoryComboBox.getCheckModel ().getCheckedIndices ());
-            optionFilteringService.selecionHandle (0, selectResult);
+            ObservableList<String> oListInput;
+            oListInput = factoryComboBox.getCheckModel ().getCheckedItems ();
+            for (String s:oListInput){System.out.println(s);}
+        });
+
+        factoryBtn.setOnAction(e -> {
+            ObservableList<String> oListInput;
+            oListInput = factoryComboBox.getCheckModel ().getCheckedItems ();
+            for (String s:oListInput){System.out.println(s);}
+            optionFilteringService.selectionHandle (0, oListInput);
             optionFilteringService.resultInter (0);
         });
 
+//        customerComboBox.setOnMouseEntered (event -> {
+//            ArrayList<String> result;
+//            result = optionFilteringService.getMenu (1);
+//            customerComboBox.getItems ().clear();
+//            customerComboBox.getCheckModel().clearChecks();
+//
+//
+//            //factoryComboBox.getItems ().add("Select None");
+//
+//            for(String x:result){
+//                if(x.isEmpty()){}
+//                else {
+//                    customerComboBox.getItems().add(x);
+//                    //System.out.println("the available options are: " + x);
+//                }
+//            }
+////            if(optionFilteringService.getListOn(1)){
+////                for(int i=0;i<result.size()+1;i++)
+////                    customerComboBox.getCheckModel().check(i);
+////            }
+//
+//        });
+
+//        customerComboBox.getCheckModel ().getCheckedItems ().addListener ((ListChangeListener<String>) c -> {
+//            ObservableList<String> oListInput;
+//            oListInput = customerComboBox.getCheckModel ().getCheckedItems ();
+//            for (String s:oListInput){System.out.println(s);}
+//        });
+//
+//        customerBtn.setOnAction(e -> {
+//            ObservableList<String> oListInput;
+//            oListInput = factoryComboBox.getCheckModel ().getCheckedItems ();
+//            for (String s:oListInput){System.out.println(s);}
+//            optionFilteringService.selectionHandle (1, oListInput);
+//            optionFilteringService.resultInter (1);
+//        });
+
+
+/*
 
         customerComboBox.setOnMouseEntered (event -> {
             ArrayList<String> result;
@@ -240,7 +300,8 @@ public class test extends Application {
             optionFilteringService.resultInter (4);
         });
 
-        /*partnoComboBox.setOnMouseEntered (event -> {
+        */
+/*partnoComboBox.setOnMouseEntered (event -> {
             ArrayList<String> result;
             partnoComboBox.getItems ().remove (0,partnoComboBox.getItems ().size ());
             partnoComboBox.getItems ().add("Select None");
@@ -256,7 +317,8 @@ public class test extends Application {
             optionFilteringService.selecionHandle (5, selectResult);
             optionFilteringService.resultInter (5);
         });
-*/
+*//*
+
         stageComboBox.setOnMouseEntered (event -> {
             ArrayList<String> result;
             stageComboBox.getItems ().remove (0,stageComboBox.getItems ().size ());
@@ -358,6 +420,7 @@ public class test extends Application {
             optionFilteringService.selecionHandle (11, selectResult);
             optionFilteringService.resultInter (11);
         });
+*/
 
 /*        platformComboBox.setOnMouseEntered (event -> {
             ArrayList<String> result;
@@ -388,8 +451,8 @@ public class test extends Application {
     }
 
     public static void main(String[] args) {
-        //String redisServer = "redis://TDnI123!@aurora:6379";
-        String redisServer = "redis://localhost:6379";
+        String redisServer = "redis://TDnI123!@aurora:6379";
+        //String redisServer = "redis://localhost:6379";
         redis = new RedisHandling (redisServer);
         redis.redisConnect ();
         optionFilteringService = new OptionFilteringService ();
