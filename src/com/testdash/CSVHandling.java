@@ -4,9 +4,7 @@ import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
-/**
- * Created by wuping on 6/22/2017.
- */
+
 public class CSVHandling {
 
     private String sourceLocation;

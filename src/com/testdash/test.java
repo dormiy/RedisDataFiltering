@@ -8,7 +8,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -65,6 +69,11 @@ public class test extends Application {
         final Button camTypeBtn = new Button("set");
 
         final Button btn = new Button("Submit");
+
+
+        final TableView table = new TableView ();
+
+
 
         //add the contents into the grid pan
         GridPane grid = new GridPane();
@@ -133,26 +142,37 @@ public class test extends Application {
         productBtn.setOnAction(e -> btnPressed(productComboBox, 2));
         packageBtn.setOnAction(e -> btnPressed(packageComboBox, 3));
         deviceBtn.setOnAction(e -> btnPressed(deviceComboBox, 4));
-        stageBtn.setOnAction(e -> btnPressed(stageComboBox, 5));
-        operationBtn.setOnAction(e -> btnPressed(operationComboBox, 6));
-        testCodeBtn.setOnAction(e -> btnPressed(testCodeComboBox, 7));
-        testProgramBtn.setOnAction(e -> btnPressed(testProgramComboBox, 8));
-        programRevisionBtn.setOnAction(e -> btnPressed(programRevisionComboBox, 9));
+        operationBtn.setOnAction(e -> btnPressed(operationComboBox, 5));
+        stageBtn.setOnAction(e -> btnPressed(stageComboBox, 6));
+        testProgramBtn.setOnAction(e -> btnPressed(testProgramComboBox, 7));
+        programRevisionBtn.setOnAction(e -> btnPressed(programRevisionComboBox, 8));
+        testCodeBtn.setOnAction(e -> btnPressed(testCodeComboBox, 9));
         camTypeBtn.setOnAction(e -> btnPressed(camTypeComboBox, 10));
 
-        //put the grid pan into a Vbox
-        VBox root = new VBox();
 
-        root.getChildren().add(grid);
-        Scene scene = new Scene(root, 400, 500);
+
+        TableColumn firstNameCol = new TableColumn("Factory");
+        TableColumn lastNameCol = new TableColumn("Product");
+
+
+        table.getColumns ().addAll (firstNameCol,lastNameCol);
+        //firstNameCol.
+
+
+        //put the grid pan into a BorderPane
+        BorderPane border = new BorderPane();
+        border.setRight (grid);
+        border.setCenter (table);
+
+        Scene scene = new Scene(border, 1600, 1000);
         primaryStage.setTitle("Option Filtering");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     public static void main(String[] args) {
-        String redisServer = "redis://TDnI123!@aurora:6379";
-        //String redisServer = "redis://localhost:6379";
+        //String redisServer = "redis://TDnI123!@aurora:6379";
+        String redisServer = "redis://localhost:6379";
         redis = new RedisHandling(redisServer);
         redis.redisConnect();
         optionFilteringService = new OptionFilteringService();
@@ -190,7 +210,7 @@ public class test extends Application {
     private void btnPressed(CheckComboBox<String> comboBox, int index) {
         ObservableList<String> oListInput;
         oListInput = comboBox.getCheckModel().getCheckedItems();
-//            for (String s:oListInput){System.out.println(s);}
+            for (String s:oListInput){System.out.println(s);}
         optionFilteringService.selectionHandle(index, oListInput);
         optionFilteringService.resultInter();
     }
