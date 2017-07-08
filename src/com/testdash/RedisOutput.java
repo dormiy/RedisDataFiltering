@@ -9,11 +9,15 @@ import javafx.collections.ObservableList;
  */
 public class RedisOutput {
 
-private final SimpleStringProperty product;
+    private final SimpleStringProperty yield;
+    private final SimpleStringProperty product;
 
 
-    public RedisOutput(String productS) {
+
+    public RedisOutput(String productS, String yieldS) {
         this.product = new SimpleStringProperty(productS);
+        this.yield=new SimpleStringProperty (yieldS);
+
     }
 
 
@@ -24,7 +28,12 @@ private final SimpleStringProperty product;
         product.set (productS);
     }
 
-
+    public String getYield() {
+        return yield.get();
+    }
+    public void setYield(String productS) {
+        yield.set (productS);
+    }
 
 
 

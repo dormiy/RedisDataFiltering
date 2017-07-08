@@ -111,13 +111,13 @@ public class OptionFilteringService {
     }
 
 
-    public ArrayList<String> getSelection(){
+    public ArrayList<String> getSelection(String hashKey){
         String currentSelection = "user" + Integer.toString(userKey) + ":selection";
         ArrayList<String> result = new ArrayList<> ();
 
         Set<String> selectionResult = redis.commands.smembers (currentSelection);
         for (String s:selectionResult){
-            result.add(redis.commands.hget("lotDetailed:"+s, "lot_number"));
+            result.add(redis.commands.hget("lotDetailed:"+s, hashKey));
         }
         //for (String x: result){System.out.println(x);}
         return result;

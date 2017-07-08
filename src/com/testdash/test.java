@@ -149,12 +149,17 @@ public class test extends Application {
         testCodeBtn.setOnAction(e -> btnPressed(testCodeComboBox, 9));
         camTypeBtn.setOnAction(e -> btnPressed(camTypeComboBox, 10));
 
-        
+
         TableColumn firstNameCol = new TableColumn("Product");
+        TableColumn secondNameCol = new TableColumn("Yield");
+
         firstNameCol.setCellValueFactory(
                 new PropertyValueFactory<RedisOutput, String>("product"));
+        secondNameCol.setCellValueFactory(
+                new PropertyValueFactory<RedisOutput, String>("yield"));
+
         table.setItems (data);
-        table.getColumns ().add (firstNameCol);
+        table.getColumns ().addAll (firstNameCol, secondNameCol);
 
 
         //put the grid pan into a BorderPane
@@ -214,10 +219,15 @@ public class test extends Application {
     }
 
     private void submitPressed(){
-        ArrayList<String> redisOutput = optionFilteringService.getSelection ();
-        for (String s: redisOutput) {
-            //System.out.println (s);
-            data.add (new RedisOutput (s));
+        data.clear ();
+
+        ArrayList<String> redisOutput = optionFilteringService.getSelection ("lot_number");
+        ArrayList<String> redisOutput2 = optionFilteringService.getSelection ("cal_fy");
+
+        for(int i=0; i<redisOutput.size ();i++){
+
+            System.out.println ("1st column is: " +redisOutput.get(i) + ".   2nd column is " + redisOutput2.get(i));
+            data.add (new RedisOutput (redisOutput.get(i),redisOutput2.get(i)));
         }
     }
 
