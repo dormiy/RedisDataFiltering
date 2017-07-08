@@ -3,6 +3,7 @@ package com.testdash;
 import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 
 public class OptionFilteringService {
 
@@ -108,6 +109,22 @@ public class OptionFilteringService {
 //        System.out.println("ListOn Intersection result is: " + result);
         return result;
     }
+
+
+    public ArrayList<String> getSelection(){
+        String currentSelection = "user" + Integer.toString(userKey) + ":selection";
+        ArrayList<String> result = new ArrayList<> ();
+
+        Set<String> selectionResult = redis.commands.smembers (currentSelection);
+        for (String s:selectionResult){
+            result.add(redis.commands.hget("lotDetailed:"+s, "lot_number"));
+        }
+        //for (String x: result){System.out.println(x);}
+        return result;
+    }
+
+
+
 
 
 }

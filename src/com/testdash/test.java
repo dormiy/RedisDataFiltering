@@ -2,6 +2,7 @@ package com.testdash;
 
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -24,6 +26,9 @@ public class test extends Application {
 
     private static RedisHandling redis;
     private static OptionFilteringService optionFilteringService;
+
+    private TableView<RedisOutput> table = new TableView();
+    final ObservableList<RedisOutput> data = FXCollections.observableArrayList();
 
 
     @Override
@@ -69,11 +74,6 @@ public class test extends Application {
         final Button camTypeBtn = new Button("set");
 
         final Button btn = new Button("Submit");
-
-
-        final TableView table = new TableView ();
-
-
 
         //add the contents into the grid pan
         GridPane grid = new GridPane();
@@ -122,7 +122,7 @@ public class test extends Application {
 
         grid.add(btn, 1, 13);
         btn.setAlignment(Pos.BOTTOM_RIGHT);
-        btn.setOnAction(event -> System.out.println("Bang"));
+        btn.setOnAction(event -> submitPressed ());
 
 
         factoryComboBox.setOnMouseEntered(event -> listMenu(factoryComboBox, 0));
@@ -149,14 +149,12 @@ public class test extends Application {
         testCodeBtn.setOnAction(e -> btnPressed(testCodeComboBox, 9));
         camTypeBtn.setOnAction(e -> btnPressed(camTypeComboBox, 10));
 
-
-
-        TableColumn firstNameCol = new TableColumn("Factory");
-        TableColumn lastNameCol = new TableColumn("Product");
-
-
-        table.getColumns ().addAll (firstNameCol,lastNameCol);
-        //firstNameCol.
+        
+        TableColumn firstNameCol = new TableColumn("Product");
+        firstNameCol.setCellValueFactory(
+                new PropertyValueFactory<RedisOutput, String>("product"));
+        table.setItems (data);
+        table.getColumns ().add (firstNameCol);
 
 
         //put the grid pan into a BorderPane
@@ -215,5 +213,12 @@ public class test extends Application {
         optionFilteringService.resultInter();
     }
 
+    private void submitPressed(){
+        ArrayList<String> redisOutput = optionFilteringService.getSelection ();
+        for (String s: redisOutput) {
+            //System.out.println (s);
+            data.add (new RedisOutput (s));
+        }
+    }
 
 }
