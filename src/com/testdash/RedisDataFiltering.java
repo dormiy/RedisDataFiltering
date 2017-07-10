@@ -11,8 +11,8 @@ public class RedisDataFiltering {
         //String csvLocation = "/home/ping9981/Downloads/ate_all.csv";
         String csvLocation = "/Users/user/IdeaProjects/temp/ate_s.csv";
 
-        //String redisServer = "redis://TDnI123!@aurora:6379";
-        String redisServer="redis://localhost:6379";
+        String redisServer = "redis://TDnI123!@aurora:6379";
+        //String redisServer="redis://localhost:6379";
         String[] csvColumn={"Factory","Customer","Product","Package","Device","MFGStep","Stage","TestProgram", "ProgramRevision","TestCode","LotType","Year","Month","Day","Hour", "Minute", "Second"};
         int[] csvColumnNumber ={5,6,7,8,9,11,12,14,15,16,87,93,94,95,96,97,98};
 

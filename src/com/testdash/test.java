@@ -174,8 +174,8 @@ public class test extends Application {
     }
 
     public static void main(String[] args) {
-        //String redisServer = "redis://TDnI123!@aurora:6379";
-        String redisServer = "redis://localhost:6379";
+        String redisServer = "redis://TDnI123!@aurora:6379";
+        //String redisServer = "redis://localhost:6379";
         redis = new RedisHandling(redisServer);
         redis.redisConnect();
         optionFilteringService = new OptionFilteringService();
